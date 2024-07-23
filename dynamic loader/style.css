@@ -1,0 +1,20 @@
+body {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  transform: translate(0px, 0px);
+}
+.loader {
+  width: 100px;
+  height: 100px;
+  border: 3px solid rgb(207, 207, 207);
+  border-radius: 50%;
+  border-top: 5px solid #000000;
+  animation: spin 1s linear infinite;
+}
+@keyframes spin {
+  100% {
+    transform: rotate(360deg);
+  }
+}
