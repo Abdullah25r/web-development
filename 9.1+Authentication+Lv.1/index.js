@@ -36,6 +36,9 @@ const password = req.body.password
 app.post("/login", async (req, res) => {
   const result = await db.query("SELECT * FROM users WHERE email = $1",[req.body.username]);
   const users = result.rows[0];
+  // console.log(result);
+  console.log(users);
+  
   const storedPassword = req.body.password
   if (storedPassword === users.password) {
     res.render("secrets.ejs");
