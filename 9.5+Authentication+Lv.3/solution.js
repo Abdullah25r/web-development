@@ -56,35 +56,9 @@ app.get("/logout", (req, res) => {
   });
 });
 
-app.get("/secrets", async (req, res) => {
-  console.log(req.user);
-
-  ////////////////UPDATED GET SECRETS ROUTE/////////////////
+app.get("/secrets", (req, res) => {
   if (req.isAuthenticated()) {
-    try {
-      const result = await db.query(
-        `SELECT secret FROM users WHERE email = $1`,
-        [req.user.email]
-      );
-      console.log(result);
-      const secret = result.rows[0].secret;
-      if (secret) {
-        res.render("secrets.ejs", { secret: secret });
-      } else {
-        res.render("secrets.ejs", { secret: "Jack Bauer is my hero." });
-      }
-    } catch (err) {
-      console.log(err);
-    }
-  } else {
-    res.redirect("/login");
-  }
-});
-
-////////////////SUBMIT GET ROUTE/////////////////
-app.get("/submit", function (req, res) {
-  if (req.isAuthenticated()) {
-    res.render("submit.ejs");
+    res.render("secrets.ejs");
   } else {
     res.redirect("/login");
   }
@@ -146,28 +120,12 @@ app.post("/register", async (req, res) => {
   }
 });
 
-
-////////////////SUBMIT POST ROUTE/////////////////
-app.post("/submit", async function (req, res) {
-  const submittedSecret = req.body.secret;
-  console.log(req.user);
-  try {
-    await db.query(`UPDATE users SET secret = $1 WHERE email = $2`, [
-      submittedSecret,
-      req.user.email,
-    ]);
-    res.redirect("/secrets");
-  } catch (err) {
-    console.log(err);
-  }
-});
-
 passport.use(
   "local",
   new Strategy(async function verify(username, password, cb) {
     try {
       const result = await db.query("SELECT * FROM users WHERE email = $1 ", [
-        username
+        username,
       ]);
       if (result.rows.length > 0) {
         const user = result.rows[0];
@@ -204,6 +162,7 @@ passport.use(
     },
     async (accessToken, refreshToken, profile, cb) => {
       try {
+        console.log(profile);
         const result = await db.query("SELECT * FROM users WHERE email = $1", [
           profile.email,
         ]);
